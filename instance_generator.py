@@ -4,19 +4,22 @@ import random
 def openFile(file):
     n = []
     N = None
+    comp_range = []
     with open(file, 'r') as file:
         lines = file.readlines()
     for line in lines:
         line = line.strip()
         if line.startswith("n ="):
-            n = list(map(int, line.split('=')[1].strip('[ ];\n').split()))
+            n = list(map(int, line.split('=')[1].strip('[ ]\n').split()))
         elif line.startswith("N ="):
-            N = int(line.split('=')[1].strip(';'))
-    return n,N
+            N = int(line.split('=')[1])
+        elif line.startswith("compatibility range"):
+            comp_range = list(map(float,(line.split('=')[1].split(","))))
+    return n,N,comp_range
 
 
 if __name__ == "__main__":
-    n, N = openFile("instance.conf")
+    n, N,comp_range = openFile("instance.conf")
 
     d = []
     m = []
@@ -36,7 +39,7 @@ if __name__ == "__main__":
             elif i > j:
                 row.append(m[j][i])
             else:
-                row.append(random.uniform(0.10, 1.0))
+                row.append(random.uniform(comp_range[0],comp_range[1]))
         m.append(row)
 
     with open("output.dat", "w") as file:
