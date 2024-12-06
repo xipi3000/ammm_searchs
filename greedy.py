@@ -55,9 +55,11 @@ def addCandidates(candidates):
             participants.add(candidate)
 
 (D,n,N,d,m) = openFile("project.4.dat")
+last_best_pair = (0,0)
 while len(participants)<sum(n):
     best_value = 0
     best_pair = (0,0)
+
     for i, row in enumerate(m):
         for j, pair_value in enumerate(row):
             if i < j and (i not in participants or j not in participants) and not isDepartmentCompleted([i,j]):
@@ -67,13 +69,16 @@ while len(participants)<sum(n):
     i = best_pair[0]
     j = best_pair[1]
     if best_value > 0.15:
-        addCandidates([i, j])
+        addCandidates(best_pair)
     else:
         for k in range(N):
             if k != i and k != j:
                 if m[i][k] > 0.85 and m[j][k] > 0.85:
                     addCandidates([i, j, k])
-if(len(participants> sum(N))):
+    if last_best_pair==best_pair:
+        break
+    last_best_pair = best_pair
+if len(participants) != sum(n):
     print("Infeasible")
 else:
     print(participants)

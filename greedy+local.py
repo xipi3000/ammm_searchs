@@ -94,7 +94,7 @@ def local_search(initial_committee):
 
 # Main Program
 (D, n, N, d, m) = openFile("project.4.dat")
-
+last_best_pair = (0,0)
 # Greedy Algorithm
 while len(participants) < sum(n):
     best_value = 0
@@ -107,13 +107,15 @@ while len(participants) < sum(n):
                     best_value = pair_value
     i, j = best_pair
     if best_value > 0.15:
-        addCandidates([i, j])
+        addCandidates(best_pair)
     else:
         for k in range(N):
             if k != i and k != j:
                 if m[i][k] > 0.85 and m[j][k] > 0.85:
                     addCandidates([i, j, k])
-
+    if last_best_pair==best_pair:
+        break
+    last_best_pair = best_pair
 # Check feasibility
 if len(participants) > sum(n):
     print("Infeasible")
