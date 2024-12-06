@@ -54,32 +54,34 @@ def addCandidates(candidates):
         for candidate in candidates:
             participants.add(candidate)
 
-(D,n,N,d,m) = openFile("project.4.dat")
-last_best_pair = (0,0)
-while len(participants)<sum(n):
-    best_value = 0
-    best_pair = (0,0)
 
-    for i, row in enumerate(m):
-        for j, pair_value in enumerate(row):
-            if i < j and (i not in participants or j not in participants) and not isDepartmentCompleted([i,j]):
-                if pair_value > best_value:
-                    best_pair = (i,j)
-                    best_value = pair_value
-    i = best_pair[0]
-    j = best_pair[1]
-    if best_value > 0.15:
-        addCandidates(best_pair)
+if __name__ == "__main__":
+    (D,n,N,d,m) = openFile("output.dat")
+    last_best_pair = (0,0)
+    while len(participants)<sum(n):
+        best_value = 0
+        best_pair = (0,0)
+
+        for i, row in enumerate(m):
+            for j, pair_value in enumerate(row):
+                if i < j and (i not in participants or j not in participants) and not isDepartmentCompleted([i,j]):
+                    if pair_value > best_value:
+                        best_pair = (i,j)
+                        best_value = pair_value
+        i = best_pair[0]
+        j = best_pair[1]
+        if best_value > 0.15:
+            addCandidates(best_pair)
+        else:
+            for k in range(N):
+                if k != i and k != j:
+                    if m[i][k] > 0.85 and m[j][k] > 0.85:
+                        addCandidates([i, j, k])
+        if last_best_pair==best_pair:
+            break
+        last_best_pair = best_pair
+    if len(participants) != sum(n):
+        print("Infeasible")
     else:
-        for k in range(N):
-            if k != i and k != j:
-                if m[i][k] > 0.85 and m[j][k] > 0.85:
-                    addCandidates([i, j, k])
-    if last_best_pair==best_pair:
-        break
-    last_best_pair = best_pair
-if len(participants) != sum(n):
-    print("Infeasible")
-else:
-    print(participants)
-    print(calculate_compatibility(participants))
+        print(participants)
+        print(calculate_compatibility(participants))
