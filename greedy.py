@@ -70,6 +70,7 @@ if __name__ == "__main__":
                         best_value = pair_value
         i = best_pair[0]
         j = best_pair[1]
+        #Check for constraints
         if best_value > 0.15:
             addCandidates(best_pair)
         else:
