@@ -59,9 +59,9 @@ if __name__ == "__main__":
     (D,n,N,d,m) = openFile("output.dat")
     last_best_pair = (0,0)
     while len(participants)<sum(n):
+        #Getting pair with the best value
         best_value = 0
         best_pair = (0,0)
-
         for i, row in enumerate(m):
             for j, pair_value in enumerate(row):
                 if i < j and (i not in participants or j not in participants) and not isDepartmentCompleted([i,j]):
