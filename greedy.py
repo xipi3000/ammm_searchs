@@ -76,10 +76,10 @@ def addCandidates(candidates):
     print(participants)
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("project.8.dat")
+    (D,n,N,d,m) = openFile("project.7.dat")
     older_searches = []
     start_time = time.time()
-    max_itr = 10
+    max_itr = N
     itr = 0
     while len(participants)<sum(n) and not itr > max_itr:
         #Getting pair with the best value
