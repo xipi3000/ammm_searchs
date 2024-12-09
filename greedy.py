@@ -76,7 +76,7 @@ def addCandidates(candidates):
     print(participants)
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("project.7.dat")
+    (D,n,N,d,m) = openFile("output.dat")
     older_searches = []
     start_time = time.time()
     max_itr = N
@@ -95,17 +95,8 @@ if __name__ == "__main__":
 
         i = best_pair[0]
         j = best_pair[1]
-        #Check for constraints
         if best_value > 0.15:
             addCandidates(best_pair)
-        #else:
-            #for k in range(N):
-             #   if k != i and k != j:
-             #       if m[i][k] > 0.85 and m[j][k] > 0.85:
-              #          addCandidates([i, j, k])
-        #if last_best_pair==best_pair:
-        #    continue
-        #print(best_value)
         itr+=1
         older_searches.append(best_pair)
     end_time = time.time()
