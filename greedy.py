@@ -40,54 +40,80 @@ def calculate_compatibility(participants):
                 count += 1
     return total_score / count if count > 0 else 0
 
-def isDepartmentCompleted(candidates):
-    if len(candidates) == 0:
+def isDepartmentCompleted(candidates,participants_future=set()):
+    if len(candidates) == 0 or len(participants_future)==0:
         return False
-
-
-    is_full = sum(1 for person in participants if d[person] == d[candidates[0]]) == n[d[candidates[0]]-1]
+    is_full = sum(1 for person in participants_future if d[person] == d[candidates[0]]) >= n[d[candidates[0]]-1]
     if is_full:
         return True
-    return isDepartmentCompleted(candidates[1:])
+    participants_future.add(candidates[0])
+    return isDepartmentCompleted(candidates[1:],participants_future)
 
+
+def areCompatible(candidates):
+
+    bigger_than_85 = True
+    if len(participants)==0:
+        return True
+    for participant in participants:
+        if participant != m[candidates[0]] and participant != m[candidates[0]]:
+            if m[candidates[0]][participant] <= 0.15:
+                bigger_than_85 = False
+                for third_one in participants:
+                    if m[candidates[0]][third_one] > 0.85 and m[candidates[1]][third_one] > 0.85:
+                        return  True
+            elif m[candidates[1]][participant] <= 0.15:
+                bigger_than_85 = False
+                for third_one in participants:
+                    if m[candidates[0]][third_one] > 0.85 and m[candidates[1]][third_one] > 0.85:
+                        return  True
+    return bigger_than_85
 def addCandidates(candidates):
-    if not isDepartmentCompleted(candidates):
-        for candidate in candidates:
-            participants.add(candidate)
-
+    #print(participants)
+    if areCompatible(candidates) and (not isDepartmentCompleted(candidates,participants)):
+            for candidate in candidates:
+                participants.add(candidate)
+    print(participants)
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("project.2.dat")
-    last_best_pair = (0,0)
+    (D,n,N,d,m) = openFile("project.8.dat")
+    older_searches = []
     start_time = time.time()
-    while len(participants)<sum(n):
+    max_itr = 10
+    itr = 0
+    while len(participants)<sum(n) and not itr > max_itr:
         #Getting pair with the best value
         best_value = 0
         best_pair = (0,0)
         for i, row in enumerate(m):
             for j, pair_value in enumerate(row):
-                if i < j and (i not in participants or j not in participants) and not isDepartmentCompleted([i,j]):
-                    if pair_value > best_value:
+                if i < j and (i not in participants or j not in participants) and (i,j) not in older_searches: #and (i,j)!=last_best_pair: #and not isDepartmentCompleted([i,j],set.copy(participants)):
+                    if pair_value >= best_value:
                         best_pair = (i,j)
                         best_value = pair_value
+                        #print(i,j)
+
         i = best_pair[0]
         j = best_pair[1]
         #Check for constraints
         if best_value > 0.15:
             addCandidates(best_pair)
-        else:
-            for k in range(N):
-                if k != i and k != j:
-                    if m[i][k] > 0.85 and m[j][k] > 0.85:
-                        addCandidates([i, j, k])
-        if last_best_pair==best_pair:
-            break
-        last_best_pair = best_pair
+        #else:
+            #for k in range(N):
+             #   if k != i and k != j:
+             #       if m[i][k] > 0.85 and m[j][k] > 0.85:
+              #          addCandidates([i, j, k])
+        #if last_best_pair==best_pair:
+        #    continue
+        #print(best_value)
+        itr+=1
+        older_searches.append(best_pair)
     end_time = time.time()
     if len(participants) != sum(n):
         print("Infeasible")
     else:
         print(participants)
         print(calculate_compatibility(participants))
+
         elapsed_time = end_time - start_time
         print("Time: "+str(elapsed_time))
