@@ -51,13 +51,35 @@ def addCandidates(candidates):
     if not isDepartmentCompleted(candidates):
         for candidate in candidates:
             participants.add(candidate)
-
-def is_valid_committee(committee):
-    # Check if the committee satisfies department constraints
+def is_valid_departments(committee):
     department_counts = [0] * D
     for participant in committee:
         department_counts[d[participant] - 1] += 1
     return department_counts == n
+
+def is_valid_compatibility(committee):
+    department_counts = [0] * D
+    for i in committee:
+        compatible = False
+        for j in committee:
+            if i != j:
+                if m[i][j]<=0:
+                    return False
+                elif m[i][j]<=0.15:
+                    for k in committee:
+                        if k != i and k != j:
+                            if m[i][k] > 0.85 and m[j][k] > 0.85:
+                                compatible = True
+                            else:
+                                print("p1 ="+ str(i) + ", p2= " +str(j))
+        #if compatible:
+        department_counts[d[i] - 1] += 1
+    return department_counts == n
+
+def is_valid_committee(committee):
+    return is_valid_departments(committee) #and is_valid_compatibility(committee)
+    # Check if the committee satisfies department constraints
+
 
 def get_neighbors(current_committee):
     neighbors = []
@@ -68,7 +90,8 @@ def get_neighbors(current_committee):
                 new_committee = current_committee.copy()
                 new_committee.remove(participant_out)
                 new_committee.add(participant_in)
-                if is_valid_committee(new_committee):  # Ensure the new committee is valid
+                if is_valid_compatibility(new_committee):  # Ensure the new committee is valid
+
                     neighbors.append(new_committee)
     return neighbors
 

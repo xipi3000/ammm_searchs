@@ -1,3 +1,4 @@
+import time
 
 participants =  set() #List of all participants
 
@@ -56,8 +57,9 @@ def addCandidates(candidates):
 
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("output.dat")
+    (D,n,N,d,m) = openFile("project.2.dat")
     last_best_pair = (0,0)
+    start_time = time.time()
     while len(participants)<sum(n):
         #Getting pair with the best value
         best_value = 0
@@ -81,8 +83,11 @@ if __name__ == "__main__":
         if last_best_pair==best_pair:
             break
         last_best_pair = best_pair
+    end_time = time.time()
     if len(participants) != sum(n):
         print("Infeasible")
     else:
         print(participants)
         print(calculate_compatibility(participants))
+        elapsed_time = end_time - start_time
+        print("Time: "+str(elapsed_time))
