@@ -2,7 +2,7 @@ import time
 
 participants =  set() #List of all participants
 
-def openFile(file):
+def open_file(file):
     D = None
     n = []
     N = None
@@ -29,7 +29,7 @@ def openFile(file):
                 d = list(map(int, line.split('=')[1].strip('[ ];\n').split()))
     return (D,n,N,d,m)
 
-def calculate_compatibility(participants):
+def calculate_compatibility():
     # Calculate the average compatibility score for the current participants
     total_score = 0
     count = 0
@@ -40,8 +40,7 @@ def calculate_compatibility(participants):
                 count += 1
     return total_score / count if count > 0 else 0
 
-def isDepartmentCompleted(candidate):
-
+def is_department_completed(candidate):
     is_full = sum(1 for person in participants if d[person] == d[candidate]) >= n[d[candidate]-1]
     if is_full:
         return True
@@ -49,8 +48,7 @@ def isDepartmentCompleted(candidate):
     return False
 
 
-def areCompatible(candidate):
-
+def are_compatible(candidate):
     bigger_than_85 = True
     if len(participants)==0:
         return True
@@ -62,15 +60,13 @@ def areCompatible(candidate):
                     if m[candidate][third_one] > 0.85 and m[participant][third_one] > 0.85:
                         return  True
     return bigger_than_85
-def addCandidates(candidate):
-    #print(participants)
-    if areCompatible(candidate) and (not isDepartmentCompleted(candidate)):
+def add_candidates(candidate):
+    if are_compatible(candidate) and (not is_department_completed(candidate)):
+        participants.add(candidate)
 
-            participants.add(candidate)
-    #print(participants)
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("output-64.dat")
+    (D,n,N,d,m) = open_file("project.2.dat")
 
     start_time = time.time()
 
@@ -87,20 +83,20 @@ if __name__ == "__main__":
                 if (i not in participants) and i not in older_searches:
                         eval_participants = set.copy(participants)
                         eval_participants.add(i)
-                        if calculate_compatibility(eval_participants) >= best_value:
+                        if calculate_compatibility() >= best_value:
                             best_participant = i
-                            best_value = calculate_compatibility(eval_participants)
-            addCandidates(best_participant)
+                            best_value = calculate_compatibility()
+            add_candidates(best_participant)
             numb_of_searches+=1
             older_searches.append(best_participant)
-            print(participants)
+
         itr+=1
     end_time = time.time()
     if len(participants) != sum(n):
         print("Infeasible")
     else:
         print(participants)
-        print(calculate_compatibility(participants))
+        print(calculate_compatibility())
 
         elapsed_time = end_time - start_time
         print("Time: "+str(elapsed_time))
