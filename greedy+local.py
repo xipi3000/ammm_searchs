@@ -128,7 +128,7 @@ def addCandidates(candidates):
     print(participants)
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("project.8.dat")
+    (D,n,N,d,m) = openFile("project.4.dat")
 
     start_time = time.time()
 
