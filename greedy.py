@@ -29,7 +29,7 @@ def open_file(file):
                 d = list(map(int, line.split('=')[1].strip('[ ];\n').split()))
     return (D,n,N,d,m)
 
-def calculate_compatibility():
+def calculate_compatibility(participants):
     # Calculate the average compatibility score for the current participants
     total_score = 0
     count = 0
@@ -66,7 +66,7 @@ def add_candidates(candidate):
 
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = open_file("project.2.dat")
+    (D,n,N,d,m) = open_file("project.3.dat")
 
     start_time = time.time()
 
@@ -83,9 +83,9 @@ if __name__ == "__main__":
                 if (i not in participants) and i not in older_searches:
                         eval_participants = set.copy(participants)
                         eval_participants.add(i)
-                        if calculate_compatibility() >= best_value:
+                        if calculate_compatibility(eval_participants) >= best_value:
                             best_participant = i
-                            best_value = calculate_compatibility()
+                            best_value = calculate_compatibility(eval_participants)
             add_candidates(best_participant)
             numb_of_searches+=1
             older_searches.append(best_participant)
@@ -96,7 +96,7 @@ if __name__ == "__main__":
         print("Infeasible")
     else:
         print(participants)
-        print(calculate_compatibility())
+        print(calculate_compatibility(participants))
 
         elapsed_time = end_time - start_time
         print("Time: "+str(elapsed_time))
