@@ -116,7 +116,7 @@ def add_candidates(candidate):
 
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = open_file("project.8.dat")
+    (D,n,N,d,m) = open_file("../TestedInstances/instance-32.dat")
 
     start_time = time.time()
 
@@ -141,17 +141,20 @@ if __name__ == "__main__":
             older_searches.append(best_participant)
 
         itr+=1
-    end_time = time.time()
+
     if len(participants) != sum(n):
         print("Infeasible")
 
     else:
         print("Greedy Committee:", participants)
         print("Initial Compatibility Score:", calculate_compatibility(participants))
-
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print("Time: " + str(elapsed_time))
         # Local Search
         final_committee, final_score = local_search(participants)
         print("Final Committee after Local Search:", final_committee)
         print("Final Compatibility Score:", final_score)
+        end_time = time.time()
         elapsed_time = end_time - start_time
         print("Time: " + str(elapsed_time))

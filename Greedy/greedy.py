@@ -66,7 +66,7 @@ def add_candidates(candidate):
 
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = open_file("project.3.dat")
+    (D,n,N,d,m) = open_file("../TestedInstances/instance-64.dat")
 
     start_time = time.time()
 
@@ -86,6 +86,7 @@ if __name__ == "__main__":
                         if calculate_compatibility(eval_participants) >= best_value:
                             best_participant = i
                             best_value = calculate_compatibility(eval_participants)
+
             add_candidates(best_participant)
             numb_of_searches+=1
             older_searches.append(best_participant)
