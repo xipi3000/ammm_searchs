@@ -38,49 +38,39 @@ def calculate_compatibility(participants):
             if i != j:
                 total_score += m[i][j]
                 count += 1
-    return total_score / count
+    return total_score / count if count > 0 else 0
 
-def isDepartmentCompleted(candidates,participants_future=set()):
-    if len(candidates) == 0 or len(participants_future)==0:
-        return False
-    is_full = sum(1 for person in participants_future if d[person] == d[candidates[0]]) >= n[d[candidates[0]]-1]
+def isDepartmentCompleted(candidate):
+
+    is_full = sum(1 for person in participants if d[person] == d[candidate]) >= n[d[candidate]-1]
     if is_full:
         return True
-    participants_future.add(candidates[0])
-    return isDepartmentCompleted(candidates[1:],participants_future)
+
+    return False
 
 
-def areCompatible(candidates):
+def areCompatible(candidate):
 
     bigger_than_85 = True
     if len(participants)==0:
         return True
     for participant in participants:
-        if participant != m[candidates[0]] and participant != m[candidates[0]]:
-            if m[candidates[0]][participant] <= 0.15:
+        if participant != m[candidate]:
+            if m[candidate][participant] <= 0.15:
                 bigger_than_85 = False
                 for third_one in participants:
-                    if m[candidates[0]][third_one] > 0.85 and m[participant][third_one] > 0.85:
+                    if m[candidate][third_one] > 0.85 and m[participant][third_one] > 0.85:
                         return  True
-                if m[candidates[0]][candidates[1]] > 0.85 and m[candidates[1]][participant] > 0.85:
-                    return True
-            elif m[candidates[1]][participant] <= 0.15:
-                bigger_than_85 = False
-                for third_one in participants:
-                    if m[participant][third_one] > 0.85 and m[candidates[1]][third_one] > 0.85:
-                        return  True
-                if m[candidates[0]][candidates[1]] > 0.85 and m[candidates[0]][participant] > 0.85:
-                    return True
     return bigger_than_85
-def addCandidates(candidates):
+def addCandidates(candidate):
     #print(participants)
-    if areCompatible(candidates) and (not isDepartmentCompleted(candidates,participants)):
-            for candidate in candidates:
-                participants.add(candidate)
+    if areCompatible(candidate) and (not isDepartmentCompleted(candidate)):
+
+            participants.add(candidate)
     #print(participants)
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("project.3.dat")
+    (D,n,N,d,m) = openFile("output-64.dat")
 
     start_time = time.time()
 
@@ -88,28 +78,22 @@ if __name__ == "__main__":
     max_itr = N
     itr = 0
     while len(participants)<sum(n) and not itr > max_itr:
-        numbof_searches = 0
+        numb_of_searches = 0
         total_of_searches = ((N * N) / 2)
-        while numbof_searches <= total_of_searches and len(participants)<sum(n):
-            #Getting pair with the best value
+        while numb_of_searches <= total_of_searches and len(participants)<sum(n):
             best_value = 0
-            best_pair = (0,0)
-            for i, row in enumerate(m):
-                for j, pair_value in enumerate(row):
-                    if i < j and (i not in participants or j not in participants) and (i,j) not in older_searches: #and (i,j)!=last_best_pair: #and not isDepartmentCompleted([i,j],set.copy(participants)):
+            best_participant = -1
+            for i in range(N):
+                if (i not in participants) and i not in older_searches:
                         eval_participants = set.copy(participants)
                         eval_participants.add(i)
-                        eval_participants.add(j)
                         if calculate_compatibility(eval_participants) >= best_value:
-                            best_pair = (i, j)
-                            best_value = pair_value
-
-            i = best_pair[0]
-            j = best_pair[1]
-            if best_value > 0.15:
-                addCandidates(best_pair)
-            numbof_searches+=1
-            older_searches.append(best_pair)
+                            best_participant = i
+                            best_value = calculate_compatibility(eval_participants)
+            addCandidates(best_participant)
+            numb_of_searches+=1
+            older_searches.append(best_participant)
+            print(participants)
         itr+=1
     end_time = time.time()
     if len(participants) != sum(n):
