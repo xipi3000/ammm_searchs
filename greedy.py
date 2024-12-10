@@ -60,13 +60,17 @@ def areCompatible(candidates):
             if m[candidates[0]][participant] <= 0.15:
                 bigger_than_85 = False
                 for third_one in participants:
-                    if m[candidates[0]][third_one] > 0.85 and m[candidates[1]][third_one] > 0.85:
+                    if m[candidates[0]][third_one] > 0.85 and m[participant][third_one] > 0.85:
                         return  True
+                if m[candidates[0]][candidates[1]] > 0.85 and m[candidates[1]][participant] > 0.85:
+                    return True
             elif m[candidates[1]][participant] <= 0.15:
                 bigger_than_85 = False
                 for third_one in participants:
-                    if m[candidates[0]][third_one] > 0.85 and m[candidates[1]][third_one] > 0.85:
+                    if m[participant][third_one] > 0.85 and m[candidates[1]][third_one] > 0.85:
                         return  True
+                if m[candidates[0]][candidates[1]] > 0.85 and m[candidates[0]][participant] > 0.85:
+                    return True
     return bigger_than_85
 def addCandidates(candidates):
     #print(participants)
@@ -76,29 +80,35 @@ def addCandidates(candidates):
     print(participants)
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("output.dat")
-    older_searches = []
+    (D,n,N,d,m) = openFile("project.8.dat")
+
     start_time = time.time()
+
+    older_searches = []
     max_itr = N
     itr = 0
     while len(participants)<sum(n) and not itr > max_itr:
-        #Getting pair with the best value
-        best_value = 0
-        best_pair = (0,0)
-        for i, row in enumerate(m):
-            for j, pair_value in enumerate(row):
-                if i < j and (i not in participants or j not in participants) and (i,j) not in older_searches: #and (i,j)!=last_best_pair: #and not isDepartmentCompleted([i,j],set.copy(participants)):
-                    if pair_value >= best_value:
-                        best_pair = (i,j)
-                        best_value = pair_value
-                        #print(i,j)
+        numbof_searches = 0
+        total_of_searches = ((N * N) / 2)
+        while numbof_searches <= total_of_searches and len(participants)<sum(n):
+            #Getting pair with the best value
+            best_value = 0
+            best_pair = (0,0)
+            for i, row in enumerate(m):
+                for j, pair_value in enumerate(row):
+                    if i < j and (i not in participants or j not in participants) and (i,j) not in older_searches: #and (i,j)!=last_best_pair: #and not isDepartmentCompleted([i,j],set.copy(participants)):
+                        if pair_value >= best_value:
+                            best_pair = (i,j)
+                            best_value = pair_value
+                            #print(i,j)
 
-        i = best_pair[0]
-        j = best_pair[1]
-        if best_value > 0.15:
-            addCandidates(best_pair)
+            i = best_pair[0]
+            j = best_pair[1]
+            if best_value > 0.15:
+                addCandidates(best_pair)
+            numbof_searches+=1
+            older_searches.append(best_pair)
         itr+=1
-        older_searches.append(best_pair)
     end_time = time.time()
     if len(participants) != sum(n):
         print("Infeasible")
