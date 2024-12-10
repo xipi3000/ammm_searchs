@@ -1,8 +1,9 @@
 
 import time
 
-participants =  set() #List of all participants
+participants =  set() #List of all participants in the solution
 
+#Reeds file
 def open_file(file):
     D = None
     n = []
@@ -13,7 +14,7 @@ def open_file(file):
         lines = file.readlines()
     for line in lines:
         if line.startswith("m ="):
-            matrix_lines = lines[lines.index(line) + 1:]  # Get subsequent lines for the matrix
+            matrix_lines = lines[lines.index(line) + 1:]
             for matrix_line in matrix_lines:
                 if matrix_line.strip().startswith("["):
                     row = list(map(float, matrix_line.strip('[ ]\n').split()))
@@ -30,6 +31,7 @@ def open_file(file):
                 d = list(map(int, line.split('=')[1].strip('[ ];\n').split()))
     return (D,n,N,d,m)
 
+#Checks teh compatbility of a whole comitee, instead of calculating when a new person is added like in the greedy
 def is_valid_compatibility(committee):
     department_counts = [0] * D
     compatible = True
@@ -49,6 +51,7 @@ def is_valid_compatibility(committee):
             department_counts[d[i] - 1] += 1
     return department_counts == n
 
+#Generates new valid solutions by switching persons in the original solution
 def get_neighbors(current_committee):
     neighbors = []
     for participant_out in current_committee:
@@ -58,10 +61,11 @@ def get_neighbors(current_committee):
                 new_committee = current_committee.copy()
                 new_committee.remove(participant_out)
                 new_committee.add(participant_in)
-                if is_valid_compatibility(new_committee):  # Ensure the new committee is valid
+                if is_valid_compatibility(new_committee):
                     neighbors.append(new_committee)
     return neighbors
 
+#Calculates the best improved solution
 def local_search(initial_committee):
     current_committee = set(initial_committee)
     current_score = calculate_compatibility(current_committee)
@@ -79,8 +83,9 @@ def local_search(initial_committee):
                 break  # Move to the better neighbor immediately
     return current_committee, current_score
 
+
+#Calculates the compatibility score of all the persons in the given set
 def calculate_compatibility(participants):
-    # Calculate the average compatibility score for the current participants
     total_score = 0
     count = 0
     for i in participants:
@@ -90,6 +95,8 @@ def calculate_compatibility(participants):
                 count += 1
     return total_score / count if count > 0 else 0
 
+
+##Calculates if the department in the solution is full
 def is_department_completed(candidate):
     is_full = sum(1 for person in participants if d[person] == d[candidate]) >= n[d[candidate]-1]
     if is_full:
@@ -97,7 +104,7 @@ def is_department_completed(candidate):
 
     return False
 
-
+#Calculates if the 0.85 mediator exists if it finds a pair with < 0.15 and also that the pair value isn't 0
 def are_compatible(candidate):
     bigger_than_85 = True
     if len(participants)==0:
@@ -110,6 +117,8 @@ def are_compatible(candidate):
                     if m[candidate][third_one] > 0.85 and m[participant][third_one] > 0.85:
                         return  True
     return bigger_than_85
+
+#Calculates if the 0.85 mediator exists if it finds a pair with < 0.15 and also that the pair value isn't 0
 def add_candidates(candidate):
     if are_compatible(candidate) and (not is_department_completed(candidate)):
         participants.add(candidate)

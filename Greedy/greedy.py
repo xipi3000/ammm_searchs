@@ -1,7 +1,8 @@
 import time
 
-participants =  set() #List of all participants
+participants =  set() #List of all participants in the solution
 
+#Reeds file
 def open_file(file):
     D = None
     n = []
@@ -12,7 +13,7 @@ def open_file(file):
         lines = file.readlines()
     for line in lines:
         if line.startswith("m ="):
-            matrix_lines = lines[lines.index(line) + 1:]  # Get subsequent lines for the matrix
+            matrix_lines = lines[lines.index(line) + 1:]
             for matrix_line in matrix_lines:
                 if matrix_line.strip().startswith("["):
                     row = list(map(float, matrix_line.strip('[ ]\n').split()))
@@ -29,8 +30,8 @@ def open_file(file):
                 d = list(map(int, line.split('=')[1].strip('[ ];\n').split()))
     return (D,n,N,d,m)
 
+#Calculates the compatibility score of all the persons in the given set
 def calculate_compatibility(participants):
-    # Calculate the average compatibility score for the current participants
     total_score = 0
     count = 0
     for i in participants:
@@ -40,6 +41,7 @@ def calculate_compatibility(participants):
                 count += 1
     return total_score / count if count > 0 else 0
 
+#Calculates if the department in the solution is full
 def is_department_completed(candidate):
     is_full = sum(1 for person in participants if d[person] == d[candidate]) >= n[d[candidate]-1]
     if is_full:
@@ -47,7 +49,7 @@ def is_department_completed(candidate):
 
     return False
 
-
+#Calculates if the 0.85 mediator exists if it finds a pair with < 0.15 and also that the pair value isn't 0
 def are_compatible(candidate):
     bigger_than_85 = True
     if len(participants)==0:
@@ -60,6 +62,9 @@ def are_compatible(candidate):
                     if m[candidate][third_one] > 0.85 and m[participant][third_one] > 0.85:
                         return  True
     return bigger_than_85
+
+
+#Adds the candidate if the constraints are correct
 def add_candidates(candidate):
     if are_compatible(candidate) and (not is_department_completed(candidate)):
         participants.add(candidate)
