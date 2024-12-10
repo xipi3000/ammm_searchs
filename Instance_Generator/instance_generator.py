@@ -42,7 +42,7 @@ if __name__ == "__main__":
                 row.append(random.uniform(comp_range[0],comp_range[1]))
         m.append(row)
 
-    with open("output.dat", "w") as file:
+    with open("../data/instance.dat", "w") as file:
         file.write(f"D = {D};\n")
         file.write(f"n = [ {' '.join(map(str, n))} ];\n")
         file.write(f"N = {N};\n")

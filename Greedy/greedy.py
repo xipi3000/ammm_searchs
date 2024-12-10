@@ -71,12 +71,16 @@ def add_candidates(candidate):
 
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = open_file("../TestedInstances/instance-64.dat")
+    #Input file
+    filename = "../data/instance-16.dat"
 
-    start_time = time.time()
+    (D,n,N,d,m) = open_file(filename)
+
+    #Number of iterations
+    max_itr = N
 
     older_searches = []
-    max_itr = N
+    start_time = time.time()
     itr = 0
     while len(participants)<sum(n) and not itr > max_itr:
         numb_of_searches = 0
