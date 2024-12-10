@@ -38,7 +38,7 @@ def calculate_compatibility(participants):
             if i != j:
                 total_score += m[i][j]
                 count += 1
-    return total_score / count if count > 0 else 0
+    return total_score / count
 
 def isDepartmentCompleted(candidates,participants_future=set()):
     if len(candidates) == 0 or len(participants_future)==0:
@@ -77,10 +77,10 @@ def addCandidates(candidates):
     if areCompatible(candidates) and (not isDepartmentCompleted(candidates,participants)):
             for candidate in candidates:
                 participants.add(candidate)
-    print(participants)
+    #print(participants)
 
 if __name__ == "__main__":
-    (D,n,N,d,m) = openFile("project.8.dat")
+    (D,n,N,d,m) = openFile("project.3.dat")
 
     start_time = time.time()
 
@@ -97,10 +97,12 @@ if __name__ == "__main__":
             for i, row in enumerate(m):
                 for j, pair_value in enumerate(row):
                     if i < j and (i not in participants or j not in participants) and (i,j) not in older_searches: #and (i,j)!=last_best_pair: #and not isDepartmentCompleted([i,j],set.copy(participants)):
-                        if pair_value >= best_value:
-                            best_pair = (i,j)
+                        eval_participants = set.copy(participants)
+                        eval_participants.add(i)
+                        eval_participants.add(j)
+                        if calculate_compatibility(eval_participants) >= best_value:
+                            best_pair = (i, j)
                             best_value = pair_value
-                            #print(i,j)
 
             i = best_pair[0]
             j = best_pair[1]
